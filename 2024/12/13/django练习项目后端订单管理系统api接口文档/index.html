@@ -1,0 +1,367 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="index, follow"><title>django练习项目后端订单管理系统api接口文档 • 小怪兽的blog</title><meta name="description" content="django练习项目后端订单管理系统api接口文档 - hua"><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="https://unpkg.com/nanoreset@3.0.1/nanoreset.min.css"><link rel="stylesheet" href="/css/theme.css"><link rel="search" type="application/opensearchdescription+xml" href="/atom.xml" title="小怪兽的blog"><meta name="generator" content="Hexo 7.3.0"></head><body><div class="wrap" id="barba-wrapper"><header><h1 class="branding"><a href="/" title="小怪兽的blog">小怪兽的blog</a></h1><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link no-barba" href="/" target="_self">HOME</a></li><li class="nav-list-item"><a class="nav-list-link no-barba" href="/about" target="_self">ABOUT</a></li><li class="nav-list-item"><a class="nav-list-link no-barba" href="/archives" target="_self">ARCHIVES</a></li><li class="nav-list-item"></ul></header><div class="barba-container"><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">django练习项目后端订单管理系统api接口文档</h1><div class="post-info"><a></a>2024-12-13</div><div class="post-content"><h1 id="订单管理系统API接口文档-v2"><a href="#订单管理系统API接口文档-v2" class="headerlink" title="订单管理系统API接口文档 v2"></a>订单管理系统API接口文档 v2</h1><p>v2更新：</p>
+<ul>
+<li>添加了用户注册和登录时返回的具体信息，包含了<code>is_staff</code>,可以用其区分是否为管理员<br>跳转不同页面或展示需要菜单</li>
+<li>新增按地址名字查找地址功能</li>
+<li>新增按订单号查找订单功能</li>
+</ul>
+<hr>
+<blockquote>
+<p>全局使用了jwt token验证登录，请求时需要在head中加<code>Bearer</code>前缀的jwt token，<br>登录、注册无需token并返回token，django自带的<code>/admin/</code>可视化管理网站也不需要token，可用于可视化和手动添加测试数据</p>
+</blockquote>
+<h2 id="用户相关接口"><a href="#用户相关接口" class="headerlink" title="用户相关接口"></a>用户相关接口</h2><h3 id="1-用户注册"><a href="#1-用户注册" class="headerlink" title="1. 用户注册"></a>1. 用户注册</h3><ul>
+<li><p><strong>URL</strong>: <code>/user/register/</code></p>
+</li>
+<li><p><strong>方法</strong>: <code>POST</code></p>
+</li>
+<li><p><strong>请求参数</strong>:</p>
+<ul>
+<li><code>username</code>: 用户名 (必填)</li>
+<li><code>password</code>: 密码 (必填)</li>
+<li><code>email</code>: 邮箱 (可选),不可重复</li>
+<li><code>firstname</code>:名(可选)</li>
+<li><code>lastname</code>：姓(可选)</li>
+<li><code>phone</code>:手机号(可选)</li>
+</ul>
+</li>
+<li><p><strong>响应</strong>:</p>
+<ul>
+<li><strong>成功</strong>: 201 Created</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;code&quot;</span><span class="punctuation">:</span> <span class="number">200</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;token&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&#123;token&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;user&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">6</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;username&quot;</span><span class="punctuation">:</span> <span class="string">&quot;manager&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;is_staff&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;is_active&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;phone&quot;</span><span class="punctuation">:</span> <span class="string">&quot;123&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;a&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;date_joined&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2024-10-11 18:43:42&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;last_login&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2024-10-29 22:17:24&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;first_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;last_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;msg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;注册成功&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>失败</strong>: </p>
+<blockquote>
+<ul>
+<li>请求格式错误  400	Bad Request</li>
+<li>邮箱或手机号已存在 400	Bad Request</li>
+<li>value格式错误400	Bad Request</li>
+<li>其他注册失败500	Internal Server Error</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h3 id="2-用户登录"><a href="#2-用户登录" class="headerlink" title="2. 用户登录"></a>2. 用户登录</h3><ul>
+<li><p><strong>URL</strong>: <code>/user/login/</code></p>
+</li>
+<li><p><strong>方法</strong>: <code>POST</code></p>
+</li>
+<li><p><strong>请求参数</strong>:</p>
+<ul>
+<li><code>username</code>: 用户名 (必填)</li>
+<li><code>password</code>: 密码 (必填)</li>
+</ul>
+</li>
+<li><p><strong>响应</strong>:</p>
+<ul>
+<li><strong>成功</strong>: 200 OK</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line"> <span class="attr">&quot;code&quot;</span><span class="punctuation">:</span> <span class="number">200</span><span class="punctuation">,</span></span><br><span class="line"> <span class="attr">&quot;token&quot;</span><span class="punctuation">:</span> <span class="string">&quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo2MiwidXNlcm5hbWUiOiJ2Mlx1NmQ0Ylx1OGJkNSIsImV4cCI6MTczMDQ3MTU3MiwiZW1haWwiOm51bGwsIm9yaWdfaWF0IjoxNzMwMzg1MTcyfQ.pyUNIgHZsIYx5Ka5aFxH0hEMKUllICjQT4Cpx-s5j6Y&quot;</span><span class="punctuation">,</span></span><br><span class="line"> <span class="attr">&quot;user&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">62</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;username&quot;</span><span class="punctuation">:</span> <span class="string">&quot;v2测试&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;is_staff&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;is_active&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;phone&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;date_joined&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2024-10-31 22:32:52&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;last_login&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;first_name&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;last_name&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span></span><br><span class="line"><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;msg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;注册成功&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>失败</strong>: </p>
+<blockquote>
+<ul>
+<li>用户名或密码错误 500 Internal Server Error  </li>
+<li>请求格式错误、密码或用户名置空 400	Bad Request</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h3 id="3-查看、修改用户（url相同方法不同）"><a href="#3-查看、修改用户（url相同方法不同）" class="headerlink" title="3. 查看、修改用户（url相同方法不同）"></a>3. 查看、修改用户（url相同方法不同）</h3><ul>
+<li><strong>URL</strong>: <code>/user/modify/&lt;int:user_id&gt;/</code> <code>/user/check/</code></li>
+</ul>
+<h4 id="3-1查看用户-GET"><a href="#3-1查看用户-GET" class="headerlink" title="3.1查看用户: GET"></a>3.1<strong>查看用户</strong>: <code>GET</code></h4><ul>
+<li>传入<code>&lt;int:user_id&gt;</code>则使用第一个url，不传入则第二个</li>
+<li>普通用户使用check会返回自己的信息，管理员使用check返回所有用户信息</li>
+<li>普通用户使用modify即使传入id也只会返回自己的信息，管理员返回指定用户信息</li>
+</ul>
+<p>  <strong>响应</strong>:</p>
+<ul>
+<li><p><strong>成功</strong>: 200 OK</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line"><span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">56</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;username&quot;</span><span class="punctuation">:</span> <span class="string">&quot;测试所有功能&quot;</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;is_active&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;phone&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;date_joined&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2024-10-18 21:26:11&quot;</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;last_login&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;first_name&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;last_name&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>失败</strong>: </p>
+<blockquote>
+<p>没写，之后的大部分都会有一个未认证（未登录&#x2F;携带token）错误 401	Unauthorized</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="3-2-修改用户：PUT"><a href="#3-2-修改用户：PUT" class="headerlink" title="3.2 修改用户：PUT"></a>3.2 <strong>修改用户：PUT</strong></h4><ul>
+<li>必须使用modify传入user_id，用户传任意id都只会修改自己的信息，管理员会修改指定id用户</li>
+<li>可修改&#x2F;可传入的字段：<code>&#39;first_name&#39;, &#39;last_name&#39;, &#39;email&#39;, &#39;phone&#39;</code>其他参数不会影响实际用户信息，用户名不可更改</li>
+<li><strong>成功</strong>: 200 OK 返回和<code>GET</code>一样的用户信息</li>
+<li><strong>失败</strong>：手机号或邮箱已存在400</li>
+</ul>
+<blockquote>
+<p>因为不同url实际对应同一个类，所以方法可以混用但不建议这么做，比如delete也是用这个类，可以用DELETE方法<code>/modify/</code>指定id删除用户</p>
+</blockquote>
+<h3 id="4-删除用户"><a href="#4-删除用户" class="headerlink" title="4. 删除用户"></a>4. 删除用户</h3><ul>
+<li><p><strong>URL</strong>: <code>/user/delete_user/</code> <code>/user/delete_user/&lt;int:user_id&gt;/</code></p>
+</li>
+<li><p><strong>方法</strong>: <code>DELETE</code></p>
+</li>
+<li><p>用户不能传<code>user_id</code>,传入则返回<code>&#123;&quot;message&quot;: &quot;只有管理员可以删除指定用户！&quot;&#125;</code>，只能用第一个删自己</p>
+</li>
+<li><p>管理员传入<code>user_id</code>则删除指定用户，不传删自己</p>
+</li>
+<li><p><strong>响应</strong>:</p>
+<ul>
+<li><strong>成功</strong>: 200 OK</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="string">&quot;用户&#123;用户名&#125;已删除！&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>失败</strong>: 404 Not Found</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="string">&quot;用户不存在！&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="5-修改密码"><a href="#5-修改密码" class="headerlink" title="5. 修改密码"></a>5. 修改密码</h3><ul>
+<li><p><strong>URL</strong>: <code>/user/change_password/</code></p>
+</li>
+<li><p><strong>方法</strong>: <code>POST</code></p>
+</li>
+<li><p><strong>请求参数</strong>:</p>
+<ul>
+<li><code>old_password</code>: 旧密码 (必填)</li>
+<li><code>new_password</code>: 新密码 (必填)</li>
+</ul>
+</li>
+<li><p><strong>响应</strong>:</p>
+<ul>
+<li><strong>成功</strong>: 200 OK</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="string">&quot;密码修改成功！&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>失败</strong>: 旧密码不正确&#x2F;未输入400，新密码未输入或为空400</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="订单商品地址管理相关接口"><a href="#订单商品地址管理相关接口" class="headerlink" title="订单商品地址管理相关接口"></a>订单商品地址管理相关接口</h2><blockquote>
+<p>用户与订单是一对多模型，订单与商品是多对多模型，地址与订单是一对多关系，用户与地址是一对多关系，<br>单独删除或修改某一条信息会影响其相关订单，地址等。做了一部分的检查，比如被使用的地址不能删除，<br>但没做全</p>
+</blockquote>
+<h3 id="1-获取所有商品-创建商品"><a href="#1-获取所有商品-创建商品" class="headerlink" title="1. 获取所有商品&#x2F;创建商品"></a>1. 获取所有商品&#x2F;创建商品</h3><h4 id="URL-app-products"><a href="#URL-app-products" class="headerlink" title="URL: /app/products/"></a><strong>URL</strong>: <code>/app/products/</code></h4><ul>
+<li><p><strong>方法</strong>:获取所有商品 <code>GET</code>，创建新商品<code>POST</code></p>
+</li>
+<li><p><code>GET</code>无条件返回所有商品信息</p>
+</li>
+<li><p><strong><code>POST</code>请求参数</strong>: </p>
+<ul>
+<li>只有管理员可以使用post创建商品 </li>
+<li><code>name</code>: 商品名称 (必填)(不可重复)</li>
+<li><code>price</code>: 商品价格 (必填)</li>
+<li><code>stock</code>:库存(选填，默认为0)</li>
+</ul>
+</li>
+<li><p><strong>响应</strong>:</p>
+<ul>
+<li><strong>GET 成功</strong>: 200 OK</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span>   <span class="attr">&quot;4&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;product_id&quot;</span><span class="punctuation">:</span> <span class="number">4</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;price&quot;</span><span class="punctuation">:</span> <span class="string">&quot;22.00&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;stock&quot;</span><span class="punctuation">:</span> <span class="number">7</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;product_speci&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span></span><br><span class="line"><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  ...</span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>POST 成功</strong>: 201 Created</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;msg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;商品添加成功&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;code&quot;</span><span class="punctuation">:</span> <span class="number">201</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;product&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;product_id&quot;</span><span class="punctuation">:</span> <span class="number">5</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;手机&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;price&quot;</span><span class="punctuation">:</span> <span class="string">&quot;9000.00&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;stock&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;product_speci&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>失败</strong><ul>
+<li>商品名重复400 </li>
+<li>未输入商品名和价格400</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-商品详情-查看、修改、删除指定商品"><a href="#2-商品详情-查看、修改、删除指定商品" class="headerlink" title="2. 商品详情(查看、修改、删除指定商品)"></a>2. 商品详情(查看、修改、删除指定商品)</h3><ul>
+<li><p><strong>URL</strong>: <code>/app/products/&lt;int:product_id&gt;/</code></p>
+</li>
+<li><p><strong>方法</strong>: <code>GET</code> &#x2F; <code>PUT</code> &#x2F; <code>DELETE</code></p>
+</li>
+<li><p><strong>响应</strong>:</p>
+<ul>
+<li><strong>GET 成功</strong>: 200 OK</li>
+<li><strong>PUT 成功</strong>: 200 OK   </li>
+<li>只有管理员可以修改商品信息</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="string">&quot;商品信息已更新！&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>DELETE 成功</strong>: 204 No Content</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="string">&quot;商品已删除！&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>失败：</strong></li>
+<li>商品未找到404，无效的json数据400</li>
+<li>商品已被订单包含，无法删除400</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-商品名查找商品"><a href="#3-商品名查找商品" class="headerlink" title="3.商品名查找商品"></a>3.商品名查找商品</h3><h4 id="URL-app-products-find"><a href="#URL-app-products-find" class="headerlink" title="URL: /app/products/find/&lt;str:product_name&gt;"></a><strong>URL</strong>: <code>/app/products/find/&lt;str:product_name&gt;</code></h4><ul>
+<li><strong>方法</strong>:<code>GET</code></li>
+<li>和用商品id查找相同</li>
+</ul>
+<hr>
+<h2 id="订单相关接口"><a href="#订单相关接口" class="headerlink" title="订单相关接口"></a>订单相关接口</h2><ul>
+<li>订单有submitted和reviewed两种状态，提交不减少库存，审核完成才减少库存</li>
+</ul>
+<h3 id="1-查看所有订单-创建订单"><a href="#1-查看所有订单-创建订单" class="headerlink" title="1. 查看所有订单&#x2F;创建订单"></a>1. 查看所有订单&#x2F;创建订单</h3><ul>
+<li><p><strong>URL</strong>: <code>/app/orders/</code></p>
+</li>
+<li><p><strong>方法</strong>: <code>GET</code> &#x2F; <code>POST</code></p>
+</li>
+<li><p><strong>创建订单请求参数</strong>: (POST)</p>
+<ul>
+<li><code>order_no</code>: 订单编号 (必填,不可重复)(当名字用，字符串型)</li>
+<li><code>addr_id</code>: 地址id (必填)</li>
+<li><code>items</code>: 商品项 (必填，格式见下方示例)</li>
+</ul>
+</li>
+<li><p><strong><code>POST</code>示例</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line"><span class="attr">&quot;order_no&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1111&quot;</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;addr_id&quot;</span><span class="punctuation">:</span> <span class="number">12</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;items&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;product_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;7&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;quantity&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>响应</strong>:</p>
+<ul>
+<li><strong>GET 成功</strong>: <span id="jump">200 OK  </span></li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;33&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;order_id&quot;</span><span class="punctuation">:</span> <span class="number">33</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;user&quot;</span><span class="punctuation">:</span> <span class="string">&quot;v2测试&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="string">&quot;submitted&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;order_no&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1111&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;addr&quot;</span><span class="punctuation">:</span> <span class="string">&quot;v2address&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;audit&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;audit_date&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;order_items&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">              <span class="attr">&quot;product_id&quot;</span><span class="punctuation">:</span> <span class="number">7</span><span class="punctuation">,</span></span><br><span class="line">              <span class="attr">&quot;product_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;耳机&quot;</span><span class="punctuation">,</span></span><br><span class="line">              <span class="attr">&quot;quantity&quot;</span><span class="punctuation">:</span> <span class="number">2</span></span><br><span class="line">          <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">              <span class="attr">&quot;product_id&quot;</span><span class="punctuation">:</span> <span class="number">7</span><span class="punctuation">,</span></span><br><span class="line">              <span class="attr">&quot;product_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;耳机&quot;</span><span class="punctuation">,</span></span><br><span class="line">              <span class="attr">&quot;quantity&quot;</span><span class="punctuation">:</span> <span class="number">2</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;34&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;order_id&quot;</span><span class="punctuation">:</span> <span class="number">34</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;user&quot;</span><span class="punctuation">:</span> <span class="string">&quot;v2测试&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="string">&quot;submitted&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;order_no&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1111&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;addr&quot;</span><span class="punctuation">:</span> <span class="string">&quot;v2address&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;audit&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;audit_date&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;order_items&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">              <span class="attr">&quot;product_id&quot;</span><span class="punctuation">:</span> <span class="number">7</span><span class="punctuation">,</span></span><br><span class="line">              <span class="attr">&quot;product_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;耳机&quot;</span><span class="punctuation">,</span></span><br><span class="line">              <span class="attr">&quot;quantity&quot;</span><span class="punctuation">:</span> <span class="number">1</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>POST 成功</strong>: 201 Created</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line"><span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="string">&quot;订单创建成功！&quot;</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;order_id&quot;</span><span class="punctuation">:</span> <span class="number">22</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>失败：</strong></p>
+</li>
+<li><p>地址不属于当前用户404(管理员和用户都只能使用自己的地址创建属于自己的订单)</p>
+</li>
+<li><p>订单中未包含商品项400</p>
+</li>
+<li><p>商品项未包含数量和商品id400</p>
+</li>
+<li><p>商品id无效404</p>
+</li>
+<li><p>json数据格式错误400</p>
+</li>
+</ul>
+<h3 id="2-查看·修改·删除指定订单"><a href="#2-查看·修改·删除指定订单" class="headerlink" title="2. 查看·修改·删除指定订单"></a>2. 查看·修改·删除指定订单</h3><ul>
+<li><p><strong>URL</strong>: <code>/app/orders/&lt;int:order_id&gt;/</code></p>
+</li>
+<li><p><strong>方法</strong>: <code>GET</code> &#x2F; <code>PUT</code> &#x2F; <code>DELETE</code></p>
+</li>
+<li><p><strong>响应</strong>:</p>
+</li>
+<li><p><strong>GET 成功</strong>: 200 OK <a href="#jump">同上</a></p>
+</li>
+<li><p><strong>PUT 成功</strong>: 200 OK</p>
+<blockquote>
+<ul>
+<li>已审核订单不能被修改</li>
+<li>对与每个订单只有用户本人和管理员可以修改</li>
+<li>对于地址，用户可更换地址为自己的其他地址，管理员只能更换地址为订单所有者的其他地址</li>
+<li>其他逻辑与创建订单相同</li>
+</ul>
+</blockquote>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line"> <span class="attr">&quot;msg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;订单修改成功&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;order_id&quot;</span><span class="punctuation">:</span> <span class="number">28</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>DELETE 成功</strong>: 204 No Content</p>
+</li>
+<li><blockquote>
+<p>管理员可以删除任意订单，但已审核导致的库存减少无法避免;用户可以删除自己的未审核（处于submitted状态）订单</p>
+</blockquote>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="string">&quot;订单删除成功！&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="3-审核订单"><a href="#3-审核订单" class="headerlink" title="3. 审核订单"></a>3. 审核订单</h3><ul>
+<li><p><strong>URL</strong>: <code>/app/review_order/&lt;int:order_id&gt;/</code></p>
+</li>
+<li><p><strong>方法</strong>: <code>PUT</code></p>
+</li>
+<li><p><strong>响应</strong>:</p>
+<ul>
+<li><strong>成功</strong>: 200 OK</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="string">&quot;订单已审核，库存已更新！&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;order_id&quot;</span><span class="punctuation">:</span> <span class="number">34</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;audit&quot;</span><span class="punctuation">:</span> <span class="string">&quot;manager&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;audit_date&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2024-11-01T12:18:47.504&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;reduced_stock&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;product_id&quot;</span><span class="punctuation">:</span> <span class="number">7</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;商品名&quot;</span><span class="punctuation">:</span> <span class="string">&quot;耳机&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;初始库存&quot;</span><span class="punctuation">:</span> <span class="number">16</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;减少库存&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;剩余库存&quot;</span><span class="punctuation">:</span> <span class="number">15</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>失败</strong>: 400 Bad Request</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> f<span class="string">&quot;商品 &#123;item.product.name&#125; 库存不足！&quot;</span></span><br><span class="line">  f<span class="string">&quot;库存：&#123;item.product.stock&#125;,需要数量：&#123;item.quantity&#125;&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>只有管理员可以审核订单403</p>
+</li>
+<li><p>订单未找到404</p>
+</li>
+<li><p>审核了已审核订单400</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-按订单号查找订单"><a href="#4-按订单号查找订单" class="headerlink" title="4.按订单号查找订单"></a>4.按订单号查找订单</h3><ul>
+<li><strong>URL</strong>: <code>/app/orders/find/&lt;int:order_no&gt;/</code></li>
+<li><strong>方法</strong>: <code>GET</code></li>
+<li>与用订单id查找相同</li>
+</ul>
+<hr>
+<h2 id="地址相关接口"><a href="#地址相关接口" class="headerlink" title="地址相关接口"></a>地址相关接口</h2><h3 id="1-地址列表查看-创建地址"><a href="#1-地址列表查看-创建地址" class="headerlink" title="1. 地址列表查看&#x2F;创建地址"></a>1. 地址列表查看&#x2F;创建地址</h3><ul>
+<li><p><strong>URL</strong>: <code>/addresses/</code></p>
+</li>
+<li><p><strong>方法</strong>: <code>GET</code> &#x2F; <code>POST</code></p>
+</li>
+<li><p><strong>请求参数</strong>: (POST)</p>
+<ul>
+<li><code>address</code>: 地址 (必填)</li>
+<li><code>contact</code>: 联系方式 (必填)</li>
+<li><code>remark</code>: 备注 (可选)</li>
+</ul>
+</li>
+<li><p><strong>响应</strong>:</p>
+</li>
+<li><p><strong>GET 成功</strong>:  <span id="jump1">200 OK  </span></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span></span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;addr_id&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;user&quot;</span><span class="punctuation">:</span> <span class="number">52</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;address&quot;</span><span class="punctuation">:</span> <span class="string">&quot;环翠区&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;contact&quot;</span><span class="punctuation">:</span> <span class="string">&quot;11111&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;remark&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1111&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span><span class="punctuation">,</span> </span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;addr_id&quot;</span><span class="punctuation">:</span> <span class="number">11</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;user&quot;</span><span class="punctuation">:</span> <span class="number">52</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;address&quot;</span><span class="punctuation">:</span> <span class="string">&quot;大连市&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;contact&quot;</span><span class="punctuation">:</span> <span class="string">&quot;12313&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;remark&quot;</span><span class="punctuation">:</span> <span class="string">&quot;楼下&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>POST 成功</strong>: 201 Created</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line"><span class="attr">&quot;msg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;地址创建成功&quot;</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;data&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;addr_id&quot;</span><span class="punctuation">:</span> <span class="number">11</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;user&quot;</span><span class="punctuation">:</span> <span class="number">52</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;address&quot;</span><span class="punctuation">:</span> <span class="string">&quot;大连市&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;contact&quot;</span><span class="punctuation">:</span> <span class="string">&quot;12313&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;remark&quot;</span><span class="punctuation">:</span> <span class="string">&quot;楼下&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><blockquote>
+<p>用户可以查看自己的所有地址，管理员能查看所有地址。<br>用户和管理员都只能创建自己的地址</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="2-地址详情"><a href="#2-地址详情" class="headerlink" title="2. 地址详情"></a>2. 地址详情</h3><ul>
+<li><p><strong>URL</strong>: <code>/app/addresses/&lt;int:addr_id&gt;/</code></p>
+</li>
+<li><p><strong>方法</strong>: <code>GET</code> &#x2F; <code>PUT</code> &#x2F; <code>DELETE</code></p>
+</li>
+<li><p><strong>响应</strong>:</p>
+</li>
+<li><p><strong>GET 成功</strong>: 200 OK<a href="#jump1">同上</a>  失败：404</p>
+</li>
+<li><p><strong>PUT 成功</strong>: 200 OK</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="comment">//使用了drf返回更新后的数据，若用户试图更新他人地址或发生其他错误会返回404</span></span><br><span class="line"><span class="attr">&quot;addr_id&quot;</span><span class="punctuation">:</span> <span class="number">2</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;user&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;address&quot;</span><span class="punctuation">:</span> <span class="string">&quot;大连市&quot;</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;contact&quot;</span><span class="punctuation">:</span> <span class="string">&quot;12313&quot;</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;remark&quot;</span><span class="punctuation">:</span> <span class="string">&quot;楼下&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>DELETE 成功</strong>: 204 No Content</p>
+<blockquote>
+<p>检查地址是否被使用，使用了则不能被删除，返回400</p>
+</blockquote>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="comment">//使用了drf，若用户试图删除他人地址或发生其他错误会返回404</span></span><br><span class="line">  <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="string">&quot;地址已删除！&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="3-按名字查找地址"><a href="#3-按名字查找地址" class="headerlink" title="3. 按名字查找地址"></a>3. 按名字查找地址</h3><ul>
+<li><strong>URL</strong>: <code>/app/addresses/find/&lt;str:addr_name&gt;</code></li>
+<li><strong>方法</strong>: <code>GET</code></li>
+<li><strong>响应</strong>: 同查看指定地址</li>
+</ul>
+<hr>
+<h2 id="管理站点"><a href="#管理站点" class="headerlink" title="管理站点"></a>管理站点</h2><ul>
+<li><strong>URL</strong>: <code>/admin/</code></li>
+</ul>
+<blockquote>
+<ul>
+<li><strong>django</strong>自带的管理站点，可以方便的可视化数据，修改信息，管理权限和分组等并可以自定义  </li>
+<li>很多地方逻辑与实际服务器不同(做的太完美了)(想要相同需要额外自定义admin站点)，比如有些字段<br>可以为空但在<code>/admin/</code>中不能为空</li>
+<li>这里设置<code>superuser</code>(拥有所有权限)只能在后端终端创建，<code>staff</code>(有指定权限)可以在这个<br>网站由其他staff创建&#x2F;指定，<code>superuser</code>和<code>staff</code>都能登录本站点</li>
+<li><code>superuser</code>：用户名：admin，密码：liuweihua</li>
+</ul>
+</blockquote>
+</div></article></div></main><footer><div class="paginator"><a class="next" href="/2024/12/12/%E8%87%AA%E6%88%91%E4%BB%8B%E7%BB%8D/">next</a></div><div class="copyright"><p>&copy; 2024 <a href="https://vekaihuahua.github.io">hua</a><br>Powered by <a href="https://hexo.io/" rel="noreferrer" target="_blank">Hexo</a></p></div></footer></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/barba.js/1.0.0/barba.min.js"></script><script>document.addEventListener('DOMContentLoaded', function() {
+    Barba.Pjax.start()
+})</script></body></html>
